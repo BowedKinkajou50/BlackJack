@@ -86,6 +86,7 @@ function hit() {
 }
 
 function stay() {
+    // Player's and dealer's sums after reducing the Ace counts
     dealerSum = reduceAce(dealerSum, dealerAceCount);
     yourSum = reduceAce(yourSum, yourAceCount);
 
@@ -93,27 +94,36 @@ function stay() {
     document.getElementById("hidden").src = "./cards/" + hidden + ".png";
 
     let message = "";
+
+    // Dealer draws until the sum is over 17
+    while (dealerSum < 17) {
+        let cardImg = document.createElement("img");
+        let card = deck.pop();
+        cardImg.src = "./cards/" + card + ".png";
+        dealerSum += getValue(card);
+        dealerAceCount += checkAce(card);
+        document.getElementById("dealer-cards").append(cardImg);
+    }
+
+    // Determine the winner after the dealer draws
     if (yourSum > 21) {
         message = "You Lose!";
-    }
-    else if (dealerSum > 21) {
+    } else if (dealerSum > 21) {
         message = "You win!";
-    }
-    //both you and dealer <= 21
-    else if (yourSum == dealerSum) {
+    } else if (yourSum == dealerSum) {
         message = "Tie!";
-    }
-    else if (yourSum > dealerSum) {
+    } else if (yourSum > dealerSum) {
         message = "You Win!";
-    }
-    else if (yourSum < dealerSum) {
+    } else if (yourSum < dealerSum) {
         message = "You Lose!";
     }
 
+    // Display the results
     document.getElementById("dealer-sum").innerText = dealerSum;
     document.getElementById("your-sum").innerText = yourSum;
     document.getElementById("results").innerText = message;
 }
+
 
 function getValue(card) {
     let data = card.split("-"); // "4-C" -> ["4", "C"]
